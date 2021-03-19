@@ -8,7 +8,7 @@ from .views import (
     FollowingListView,
     FollowersListView,
     about,
-    tweetpreference,
+    tweet_preference,
 )
 
 urlpatterns = [
@@ -20,5 +20,5 @@ urlpatterns = [
     path('tweet/<int:pk>/delete/', TweetDeleteView.as_view(), name='tweet-delete'),
     path('user/<str:username>/following', FollowingListView.as_view(), name='user-following'),
     path('user/<str:username>/followers', FollowersListView.as_view(), name='user-followers'),
-    path('tweet/<int:tweetid>/preference/<int:userpreference>', tweetpreference, name='tweetpreference'),
+    path('tweet/<int:tweet_id>/preference/<int:user_preference>', tweet_preference, name='tweet_preference'),
 ]

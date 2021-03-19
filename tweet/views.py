@@ -178,83 +178,83 @@ def about(request):
 
 
 @login_required
-def tweetpreference(request, tweetid, userpreference):
+def tweet_preference(request, tweet_id, user_preference):
     if request.method == 'POST':
-        eachtweet = get_object_or_404(Tweet, id=tweetid)
+        each_tweet = get_object_or_404(Tweet, id=tweet_id)
         obj = ''
-        valueobj = ''
+        value_obj = ''
 
         try:
-            obj = Preference.objects.get(user=request.user, tweet=eachtweet)
-            valueobj  = obj.value  # value of userpreference
-            valueobj = int(valueobj)
-            userpreference = int(userpreference)
+            obj = Preference.objects.get(user=request.user, tweet=each_tweet)
+            value_obj = obj.value  # value of user_preference
+            value_obj = int(value_obj)
+            user_preference = int(user_preference)
 
-            if valueobj != userpreference:
+            if value_obj != user_preference:
                 obj.delete()
-                upref = Preference()
-                upref.user = request.user
-                upref.tweet = eachtweet
-                upref.value = userpreference
+                up_ref = Preference()
+                up_ref.user = request.user
+                up_ref.tweet = each_tweet
+                up_ref.value = user_preference
 
-                if userpreference == 1 and valueobj != 1:
-                    eachtweet.likes += 1
-                    eachtweet.dislikes -= 1
-                elif userpreference == 2 and valueobj != 2:
-                    eachtweet.dislikes += 1
-                    eachtweet.likes -= 1
+                if user_preference == 1 and value_obj != 1:
+                    each_tweet.likes += 1
+                    each_tweet.dislikes -= 1
+                elif user_preference == 2 and value_obj != 2:
+                    each_tweet.dislikes += 1
+                    each_tweet.likes -= 1
 
-                upref.save()
-                eachtweet.save()
+                up_ref.save()
+                each_tweet.save()
 
                 context = {
-                    'eachtweet': eachtweet,
-                    'tweetid': tweetid
+                    'each_tweet': each_tweet,
+                    'tweet_id': tweet_id
                 }
                 return redirect('home')
 
-            elif valueobj == userpreference:
+            elif value_obj == user_preference:
                 obj.delete()
 
-                if userpreference == 1:
-                    eachtweet.likes -= 1
-                elif userpreference == 2:
-                    eachtweet.dislikes -= 1
+                if user_preference == 1:
+                    each_tweet.likes -= 1
+                elif user_preference == 2:
+                    each_tweet.dislikes -= 1
 
-                eachtweet.save()
+                each_tweet.save()
                 context = {
-                    'eachtweet': eachtweet,
-                    'tweetid': tweetid
+                    'each_tweet': each_tweet,
+                    'tweet_id': tweet_id
                 }
                 return redirect('home')
 
         except Preference.DoesNotExist:
-            upref = Preference()
-            upref.user = request.user
-            upref.tweet = eachtweet
-            upref.value = userpreference
-            userpreference = int(userpreference)
+            up_ref = Preference()
+            up_ref.user = request.user
+            up_ref.tweet = each_tweet
+            up_ref.value = user_preference
+            user_preference = int(user_preference)
 
-            if userpreference == 1:
-                eachtweet.likes += 1
-            elif userpreference == 2:
-                eachtweet.dislikes += 1
+            if user_preference == 1:
+                each_tweet.likes += 1
+            elif user_preference == 2:
+                each_tweet.dislikes += 1
 
-            upref.save()
-            eachtweet.save()
+            up_ref.save()
+            each_tweet.save()
 
             context = {
-                'eachtweet': eachtweet,
-                'tweetid': tweetid
+                'each_tweet': each_tweet,
+                'tweet_id': tweet_id
             }
 
             return redirect('home')
 
     else:
-        eachtweet = get_object_or_404(Tweet, id=tweetid)
+        each_tweet = get_object_or_404(Tweet, id=tweet_id)
         context = {
-            'eachtweet': eachtweet,
-            'tweetid': tweetid
+            'each_tweet': each_tweet,
+            'tweet_id': tweet_id
         }
 
         return redirect('home')
