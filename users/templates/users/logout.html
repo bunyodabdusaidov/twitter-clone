@@ -1,0 +1,9 @@
+{% extends "tweet/base.html" %}
+{% block content %}
+    <h3 class="white-important">You've been logged out</h3>
+    <div class="pt-3">
+        <small class="text-muted">
+            Login again? <a class="ml-2" href="{% url 'login' %}">Login</a>
+        </small>
+    </div>
+{% endblock content %}
