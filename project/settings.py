@@ -26,8 +26,8 @@ SECRET_KEY = '*n*f0zqlu+cgn&m*sd3^qkz9b=nw6db(tfo$156o9ag-%2f_eq'
 DEBUG = True
 
 INSTALLED_APPS = [
+    'rest_framework',
     'tweet.apps.TweetConfig',
-    'users.apps.UsersConfig',
     'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
