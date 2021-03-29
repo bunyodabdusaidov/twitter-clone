@@ -28,6 +28,7 @@ DEBUG = True
 INSTALLED_APPS = [
     'rest_framework',
     'tweet.apps.TweetConfig',
+    'users.apps.UsersConfig',
     'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',

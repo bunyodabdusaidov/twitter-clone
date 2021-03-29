@@ -1,19 +1,24 @@
 from django.db import models
-from django.utils import timezone
 from django.contrib.auth.models import User
 
 
 class Tweet(models.Model):
     content = models.TextField(blank=False, max_length=150)
-    author = models.ForeignKey(User, related_name='tweet_author', on_delete=models.CASCADE)
+    author = models.ForeignKey(User, related_name='tweets', on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     likes = models.IntegerField(default=0)
+    liked_by = models.ManyToManyField(User, related_name='liked_by')
 
     def __str__(self):
-        return self.content[:5]
+        return self.content
 
     class Meta:
         ordering = ['date']
+
+
+
+
+
 
     # @property
     # def number_of_comments(self):
