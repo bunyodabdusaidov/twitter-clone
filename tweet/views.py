@@ -15,10 +15,8 @@ class TweetViewSet(viewsets.ModelViewSet):
     serializer_class = TweetSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
-
-
-
-
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 """Old django code"""

@@ -8,7 +8,7 @@ class TweetSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Tweet
-        fields = ['url', 'id', 'author', 'content', 'likes']
+        fields = ['url', 'id', 'author', 'content', 'likes', 'liked_by']
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
