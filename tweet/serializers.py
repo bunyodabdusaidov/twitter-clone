@@ -1,6 +1,7 @@
-from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Tweet
+from rest_framework import serializers
+
+from tweet.models import Tweet
 
 
 class TweetSerializer(serializers.HyperlinkedModelSerializer):
@@ -8,14 +9,37 @@ class TweetSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Tweet
-        fields = ['url', 'id', 'author', 'content', 'likes', 'liked_by']
+        fields = ['url', 'id', 'author', 'content']
+
+
+class TweetLikeSerializer(serializers.Serializer):
+    def __init__(self, **kwargs):
+        self.liked = True
+        super(TweetLikeSerializer, self).__init__(**kwargs)
+
+    def create(self, validated_data):
+        raise NotImplementedError
+
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+        likes = instance.liked.filter(author=user)
+        if likes:
+            likes.delete()
+            self.liked = False
+
+            return instance
+
+        instance.liked.create(author=user)
+        return instance
+
+
+class TweetCommentSerializer(serializers.Serializer):
+    def create(self, validated_data):
+        user = self.context['request'].user
+        comments = self.instance.commented.filter(author=user)
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    tweets = serializers.HyperlinkedRelatedField(many=True, view_name='tweet-detail', read_only=True)
-
     class Meta:
         model = User
-        fields = ['url', 'id', 'username', 'tweets']
-
-
+        fields = '__all__'

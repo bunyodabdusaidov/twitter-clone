@@ -6,8 +6,8 @@ class Tweet(models.Model):
     content = models.TextField(blank=False, max_length=150)
     author = models.ForeignKey(User, related_name='tweets', on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
-    likes = models.IntegerField(default=0)
-    liked_by = models.ManyToManyField(User, related_name='liked_by')
+    liked = models.ManyToManyField('TweetLike', related_name='tweet_likes')
+    commented = models.ManyToManyField('TweetComment', related_name='tweet_comments')
 
     def __str__(self):
         return self.content
@@ -16,21 +16,16 @@ class Tweet(models.Model):
         ordering = ['date']
 
 
+class TweetLike(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tweet_likes')
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
+class TweetComment(models.Model):
+    comment = models.TextField(max_length=150)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_commented')
+    created_at = models.DateTimeField(auto_now_add=True)
 
-
-    # @property
-    # def number_of_comments(self):
-    #     return Comment.objects.filter(commented_to=self).count()
-
-
-# class Comment(models.Model):
-#     content = models.TextField(max_length=150)
-#     author = models.ForeignKey(User, on_delete=models.CASCADE)
-#     commented_to = models.ForeignKey(Tweet, on_delete=models.CASCADE)
-#     date = models.DateTimeField(default=timezone.now)
-#
 #
 # class Preference(models.Model):
 #     user = models.ForeignKey(User, on_delete=models.CASCADE)
