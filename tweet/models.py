@@ -7,7 +7,7 @@ class Tweet(models.Model):
     author = models.ForeignKey(User, related_name='tweets', on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     liked = models.ManyToManyField('TweetLike', related_name='tweet_likes')
-    commented = models.ManyToManyField('TweetComment', related_name='tweet_comments')
+    comments = models.ManyToManyField('TweetComment', related_name='tweet_comments')
 
     def __str__(self):
         return self.content
@@ -23,7 +23,7 @@ class TweetLike(models.Model):
 
 class TweetComment(models.Model):
     comment = models.TextField(max_length=150)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_commented')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tweet_comments')
     created_at = models.DateTimeField(auto_now_add=True)
 
 #

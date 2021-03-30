@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from tweet.models import Tweet
+from tweet.models import Tweet, TweetComment
 
 
 class TweetSerializer(serializers.HyperlinkedModelSerializer):
@@ -9,7 +9,7 @@ class TweetSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Tweet
-        fields = ['url', 'id', 'author', 'content']
+        fields = ['url', 'id', 'author', 'content', 'comments']
 
 
 class TweetLikeSerializer(serializers.Serializer):
@@ -33,10 +33,15 @@ class TweetLikeSerializer(serializers.Serializer):
         return instance
 
 
-class TweetCommentSerializer(serializers.Serializer):
+class TweetCommentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
-        user = self.context['request'].user
-        comments = self.instance.commented.filter(author=user)
+        comments = validated_data.get('comments')
+        instance = Tweet.objects.create(comments=comments, **validated_data)
+        return instance
+
+    class Meta:
+        model = TweetComment
+        fields = ['comment']
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

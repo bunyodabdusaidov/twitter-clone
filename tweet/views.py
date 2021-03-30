@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from tweet.models import Tweet
-from .serializers import TweetSerializer, UserSerializer, TweetLikeSerializer
+from .serializers import TweetSerializer, UserSerializer, TweetLikeSerializer, TweetCommentSerializer
 from .permissions import IsOwnerOrReadOnly
 
 
@@ -18,10 +18,7 @@ class TweetViewSet(viewsets.ModelViewSet):
     serializer_class = TweetSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    @action(methods=['POST'], detail=True, url_name='like',
-            permission_classes=(),
-            queryset=Tweet.objects.filter(),
-            serializer_class=TweetLikeSerializer)
+    @action(methods=['POST'], detail=True, url_name='like', serializer_class=TweetLikeSerializer)
     def like(self, request, pk=None):
         tweet = self.get_object()
         serializer = self.get_serializer_class()(instance=tweet, data={},
@@ -32,17 +29,28 @@ class TweetViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_201_CREATED if serializer.liked else
                         status.HTTP_204_NO_CONTENT)
 
-    @action(methods=['POST'], detail=True, url_name='comment',
-            serializer_class=TweetCommentSerializer)
+    @action(methods=['POST'], detail=True, url_name='comment', serializer_class=TweetCommentSerializer)
     def comment(self, request, pk=None):
         tweet = self.get_object()
-        serializer = self.get_serializer_class()(instance=tweet, data={},
+        serializer = self.get_serializer_class()(instance=tweet, data=request.data,
                                                  context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+
+
+    # @action(methods=['POST'], detail=True, url_name='comment',
+    #         serializer_class=TweetCommentSerializer)
+    # def comment(self, request, pk=None):
+    #     tweet = self.get_object()
+    #     serializer = self.get_serializer_class()(instance=tweet, data={},
+    #                                              context={'request': request})
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+    #
+    # def perform_create(self, serializer):
+    #     serializer.save(author=self.request.user)
 
 
 """Old django code"""
