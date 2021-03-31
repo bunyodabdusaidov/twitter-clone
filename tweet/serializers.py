@@ -35,13 +35,14 @@ class TweetLikeSerializer(serializers.Serializer):
 
 class TweetCommentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
+        user = self.context['request'].user
         comments = validated_data.get('comments')
-        instance = Tweet.objects.create(comments=comments, **validated_data)
+        instance = Tweet.objects.create(author=user, comments=comments, **validated_data)
         return instance
 
     class Meta:
         model = TweetComment
-        fields = ['comment']
+        fields = ['author', 'comment']
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
